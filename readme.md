@@ -1,0 +1,2 @@
+# PROJECT INTRODUCTION
+<p>This project involves the creation of a Vending Machine Api that allows sellers update or <br> remove products from the vending machine, buyers to deposit coins inorder to make purchases</p>
