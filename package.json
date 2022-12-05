@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^6.7.5"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "vending-machine-api",
+  "description": "<p>This project involves the creation of a Vending Machine Api that allows sellers update or  remove products from the vending machine and buyers to deposit coins inorder to make purchases</p>",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NICKY-TECH/Vending-Machine-Api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NICKY-TECH/Vending-Machine-Api/issues"
+  },
+  "homepage": "https://github.com/NICKY-TECH/Vending-Machine-Api#readme"
+}
