@@ -14,13 +14,13 @@ userRouter.post('/create',[
 body('username').trim().notEmpty().withMessage('the username field cannot be empty'),
 body('role').trim().notEmpty().withMessage('the role field cannot be empty'),
 body('password').trim().notEmpty().withMessage('the password field cannot be empty')
-.isLength({min:8,max:16})
+.isLength({min:8,max:16}).withMessage('password must be a minimum of 8 characters and a maximum of 16 characters')
 ]
 ,createUser);
 
 userRouter.get('/:uuid',getSpecificSeller);
 
-userRouter.delete('/:uuid',deleteASeller)
+userRouter.delete('/:uuid',deleteASeller);
 
 // userRouter.put('/uuid', deleteASeller);
 

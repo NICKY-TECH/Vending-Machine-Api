@@ -7,19 +7,30 @@ const bcrypt=require('bcrypt');
 async function createUser(req,res){
     const errors=validationResult(req);
     if(!errors.isEmpty()){
-        res.status(400).json(errors.array())
+        res.status(400).json({
+            success:false,
+            error:errors.array(),
+            message:'Invalid input',
+            data:{}
+         })
     }else{
    user.findOne({username:req.body.username}, async function(error,foundUser){
     if(error){
-        // res.status(500).json({
-        //     message:'An error occurred while processing your data, please try again',
-        //     errorMessage:error
-        // })
-        console.log(error)
+        res.status(500).json({
+            success:false,
+            error:[],
+            message:'An error occurred while processing your data, please try again',
+            data:[]
+            
+        })
+      
     }else{
         if(foundUser){
-            res.status(403).json({
-                message:"A user with this username already exists"
+            res.status(400).json({
+                success:false,
+                error:[],
+                message:"A user with this username already exists",
+                data:{}
             })
         }else{
         const hashed=await bcrypt.hash(req.body.password,12)
@@ -29,7 +40,20 @@ async function createUser(req,res){
             password:hashed,
             role:req.body.role
         })
-        res.status(200).json(newUser)
+        res.status(201).json({
+            success:true,
+            error:[],
+            message:"User successfully created",
+            data:{
+                _id:newUser._id,
+                uuid:newUser.uuid,
+                username:newUser.username,
+                role:newUser.role,
+                createdAt:newUser.createdAt,
+                updatedAt:newUser.updatedAt
+                
+            }
+        })
         }
     }
 
@@ -44,23 +68,41 @@ async function getAllUsers(req,res){
         if(req.query.role=='seller'){
             const pageNumber=page||1;
             const skip=(pageNumber-1)*2;
-            user.find({role:'seller'},{password:0},{limit:2,skip:skip},function(error,sellers){
+            user.find({role:'seller'},{password:0},{limit:2,skip:skip,sort:{username:'desc'}},function(error,sellers){
                 if(error){
                     res.status(500).json({
-                        message:"An error occurred while processing your request, please try again"
+                        success:false,
+                        error:[],
+                        message:"An error occurred while processing your request, please try again",
+                        data:{}
                     })
                 }else{
                     // if users with the role= users exists
                     if(sellers){
-                        res.status(200).json(sellers)
+                        res.status(200).json({
+                            success:true,
+                            error:[],
+                            message:"Sellers Fetched Successfully!",
+                            data:sellers
+                        })
                     }else{
                         // if users with the role users doesn't exist
                         res.status(404).json({
-                            message:`No user with the role ${req.body.role} exists`
+                            success:false,
+                            error:[],
+                            message:`No user with the role ${req.body.role} exists`,
+                            data:[]
                         })
                         
                     }
                 }
+            })
+        }else if(req.query.role!='seller'&&req.query.role!='buyer'){
+            res.status(400).json({
+                success:false,
+                error:[],
+                message:"Invalid user role",
+                data:{}
             })
         }
     
@@ -74,11 +116,19 @@ function getSpecificSeller(req,res){
                 message:"an error occurred while processing your request",
             })
         }else if(seller){
-            res.status(200).json(seller)
+            res.status(200).json({
+                success:true,
+                error:[],
+                message:"Single Sller Fetched Successfully!",
+                data:seller
+            })
             
         }else if(!seller){
             res.status(404).json({
-                message:"no seller with such id exists"
+                success:false,
+                error:[],
+                message:"no seller with such id exists",
+                data:[]
             })
         }
     })
@@ -89,7 +139,10 @@ function deleteASeller(req,res){
     const specificSeller=req.params.uuid;
     user.deleteOne({role:'seller',uuid:specificSeller}).then((output)=>{
         res.status(200).json({
-            message:"seller successfully deleted"
+            success:true,
+            error:[],
+            message:"seller successfully deleted",
+            data:output
         })
     })
 

@@ -1,8 +1,6 @@
 const path=require('path');
 const {user}=require(path.join(__dirname,'..','model','userSchema'));
-const {validationResult}=require('express-validator');
-const uuid=require('uuid');
-const bcrypt=require('bcrypt');
+
 
 
 async function getAllBuyers(req,res){
@@ -10,7 +8,7 @@ async function getAllBuyers(req,res){
         if(req.query.role=='buyer'){
             const pageNumber=page||1;
             const skip=(pageNumber-1)*2;
-            user.find({role:'buyer'},{password:0},{limit:2,skip:skip},function(error,buyers){
+            user.find({role:'buyer'},{password:0},{limit:2,skip:skip,sort:{username:'desc'}},function(error,buyers){
                 if(error){
                     res.status(500).json({
                         success:false,
@@ -37,13 +35,20 @@ async function getAllBuyers(req,res){
                     }
                 }
             })
+        }else if(req.query.role!='seller'&&req.query.role!='buyer'){
+            res.status(400).json({
+                success:false,
+                error:[],
+                message:"Invalid user role",
+                data:{}
+            })
         }
     
     }
 
 function getSpecificBuyer(req,res){
     const specificBuyer=req.params.uuid;
-    user.findOne({role:'buyer',uuid:specificBuyer},function(error,buyer){
+    user.findOne({role:'buyer',uuid:specificBuyer},{password:0},function(error,buyer){
         if(error){
             res.status(500).json({
                 success:false,
@@ -56,7 +61,7 @@ function getSpecificBuyer(req,res){
                 success:true,
                 error:[],
                 message:'Single Buyer Fetched Successfully!',
-                data:seller
+                data:buyer
             })
             
         }else if(!seller){
@@ -79,7 +84,7 @@ function getSpecificBuyer(req,res){
 }
 function deleteABuyer(req,res){
     const specificBuyer=req.params.uuid;
-  user.findOneAndDelete({role:'buyer',uuid:specificBuyer}).then((output)=>{
+  user.deleteOne({role:'buyer',uuid:specificBuyer}).then((output)=>{
         res.status(200).json({
             success:true,
             error:[],

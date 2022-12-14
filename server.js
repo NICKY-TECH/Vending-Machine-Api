@@ -6,6 +6,8 @@ const {buyRouter}=require(path.join(__dirname,'routes','buy.routes'));
 
 const {depositRouter}=require(path.join(__dirname,'routes','deposit.routes'));
 
+const {buyerRouter}=require(path.join(__dirname,'routes','buyer.routes'));
+
 const {database}=require(path.join(__dirname,'databaseConnection','db'));
 
 
@@ -14,16 +16,18 @@ const express=require('express');
 
 const app=express();
 app.use(express.json());
-app.use('/api/vid/users',userRouter);
+app.use('/api/vd',buyerRouter);
+app.use('/api/vd/users',userRouter);
+app.use('api/vd/products',buyRouter);
+
+app.use('api/vd/deposits',depositRouter);
 
 
 const PORT=process.env.PORT||4000;
 
 
 
-app.use('api/vid/products',buyRouter);
 
-app.use('api/vid/deposits',depositRouter);
 
 app.listen(PORT,()=>{
     console.log(`listening at port ${PORT}`)
