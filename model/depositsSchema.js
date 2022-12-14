@@ -13,10 +13,8 @@ const depositSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    timestamps:{
-        created_at:'created_at',
-        updated_at:'updated_at'
-    }
+},{
+    timestamps:true
 })
 
 const deposit=mongoose.model('Deposit',depositSchema);

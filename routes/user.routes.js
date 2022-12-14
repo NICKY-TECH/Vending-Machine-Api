@@ -1,18 +1,28 @@
 const path=require('path');
 
-const userController=require(path.join(__dirname,'controller','users.controller'));
+const {createUser,getAllUsers,getSpecificSeller, deleteASeller}=require(path.join(__dirname,'..','controller','users.controller'));
 
 const express=require('express');
 
+const {body}=require('express-validator');
+
 const userRouter=express.Router();
 
-userRouter.get('/');
+userRouter.get('/',getAllUsers);
 
-userRouter.post('/create');
+userRouter.post('/create',[
+body('username').trim().notEmpty().withMessage('the username field cannot be empty'),
+body('role').trim().notEmpty().withMessage('the role field cannot be empty'),
+body('password').trim().notEmpty().withMessage('the password field cannot be empty')
+.isLength({min:8,max:16})
+]
+,createUser);
 
-userRouter.delete('/{uuid}');
+userRouter.get('/:uuid',getSpecificSeller);
 
-userRouter.put('/uuid')
+userRouter.delete('/:uuid',deleteASeller)
+
+// userRouter.put('/uuid', deleteASeller);
 
 
 
