@@ -8,29 +8,24 @@ async function createUser(req,res){
     const errors=validationResult(req);
     if(!errors.isEmpty()){
         res.status(400).json({
-            success:false,
-            error:errors.array(),
             message:'Invalid input',
-            data:{}
          })
     }else{
    user.findOne({username:req.body.username}, async function(error,foundUser){
     if(error){
         res.status(500).json({
-            success:false,
-            error:[],
+           
             message:'An error occurred while processing your data, please try again',
-            data:[]
+      
             
         })
       
     }else{
         if(foundUser){
             res.status(400).json({
-                success:false,
-                error:[],
+             
                 message:"A user with this username already exists",
-                data:{}
+           
             })
         }else{
         const hashed=await bcrypt.hash(req.body.password,12)
@@ -41,9 +36,7 @@ async function createUser(req,res){
             role:req.body.role
         })
         res.status(201).json({
-            success:true,
-            error:[],
-            message:"User successfully created",
+       
             data:{
                 _id:newUser._id,
                 uuid:newUser.uuid,
@@ -71,27 +64,22 @@ async function getAllUsers(req,res){
             user.find({role:'seller'},{password:0},{limit:2,skip:skip,sort:{username:'desc'}},function(error,sellers){
                 if(error){
                     res.status(500).json({
-                        success:false,
-                        error:[],
+                       
                         message:"An error occurred while processing your request, please try again",
-                        data:{}
+             
                     })
                 }else{
                     // if users with the role= users exists
                     if(sellers){
                         res.status(200).json({
-                            success:true,
-                            error:[],
-                            message:"Sellers Fetched Successfully!",
-                            data:sellers
+                          sellers
                         })
                     }else{
                         // if users with the role users doesn't exist
                         res.status(404).json({
-                            success:false,
-                            error:[],
+                          
                             message:`No user with the role ${req.body.role} exists`,
-                            data:[]
+                           
                         })
                         
                     }
@@ -99,10 +87,9 @@ async function getAllUsers(req,res){
             })
         }else if(req.query.role!='seller'&&req.query.role!='buyer'){
             res.status(400).json({
-                success:false,
-                error:[],
+             
                 message:"Invalid user role",
-                data:{}
+          
             })
         }
     
@@ -117,18 +104,15 @@ function getSpecificSeller(req,res){
             })
         }else if(seller){
             res.status(200).json({
-                success:true,
-                error:[],
-                message:"Single Sller Fetched Successfully!",
-                data:seller
+               
+              seller
             })
             
         }else if(!seller){
             res.status(404).json({
-                success:false,
-                error:[],
+              
                 message:"no seller with such id exists",
-                data:[]
+             
             })
         }
     })
@@ -139,10 +123,7 @@ function deleteASeller(req,res){
     const specificSeller=req.params.uuid;
     user.deleteOne({role:'seller',uuid:specificSeller}).then((output)=>{
         res.status(200).json({
-            success:true,
-            error:[],
-            message:"seller successfully deleted",
-            data:output
+          output
         })
     })
 

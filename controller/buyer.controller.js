@@ -11,19 +11,14 @@ async function getAllBuyers(req,res){
             user.find({role:'buyer'},{password:0},{limit:2,skip:skip,sort:{username:'desc'}},function(error,buyers){
                 if(error){
                     res.status(500).json({
-                        success:false,
-                        error:[],
+     
                         message:"An error occurred while processing your request, please try again",
-                        data:{}
                     })
                 }else{
                     // if users with the role= users exists
                     if(buyers){
                         res.status(200).json({
-                            success: true,
-                            error:[],
-                            message: 'All buyers fetched successfully!',
-                            data:buyers
+                            buyers
 
                         })
                     }else{
@@ -37,10 +32,9 @@ async function getAllBuyers(req,res){
             })
         }else if(req.query.role!='seller'&&req.query.role!='buyer'){
             res.status(400).json({
-                success:false,
-                error:[],
+                
                 message:"Invalid user role",
-                data:{}
+        
             })
         }
     
@@ -51,31 +45,20 @@ function getSpecificBuyer(req,res){
     user.findOne({role:'buyer',uuid:specificBuyer},{password:0},function(error,buyer){
         if(error){
             res.status(500).json({
-                success:false,
-                error:[],
+                
                 message:"an error occurred while processing your request",
-                data:{}
+            
             })
         }else if(buyer){
             res.status(200).json({
-                success:true,
-                error:[],
-                message:'Single Buyer Fetched Successfully!',
+            
+           
                 data:buyer
             })
             
         }else if(!seller){
             res.status(404).json({
-                success:false,
-                error:[
-                {
-                    msg:'invalid uuid'
-                }
-                ],
                 message:"no buyer with such id exists",
-                data:{
-
-                }
             })
         }
     })
@@ -86,10 +69,7 @@ function deleteABuyer(req,res){
     const specificBuyer=req.params.uuid;
   user.deleteOne({role:'buyer',uuid:specificBuyer}).then((output)=>{
         res.status(200).json({
-            success:true,
-            error:[],
-            message:"buyer successfully deleted",
-            data:output
+        output
         })
     })
 
