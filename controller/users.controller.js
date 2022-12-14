@@ -35,6 +35,7 @@ async function createUser(req,res){
             role:req.body.role
         })
         res.status(201).json({
+            id:newUser._id,
             uuid:newUser.uuid,
             username:newUser.username,
             role:newUser.role,
