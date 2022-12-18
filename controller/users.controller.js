@@ -33,7 +33,7 @@ async function createUser(req,res){
             uuid:uuid.v4()+req.body.username,
             username:req.body.username,
             password:hashed,
-            role:req.body.role
+            role:req.body.role?req.body.role:'buyer'
         })
         res.status(201).json({
        

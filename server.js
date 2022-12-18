@@ -8,6 +8,8 @@ const {depositRouter}=require(path.join(__dirname,'routes','deposit.routes'));
 
 const {buyerRouter}=require(path.join(__dirname,'routes','buyer.routes'));
 
+const {loginRouter}=require(path.join(__dirname,'routes','login.routes'));
+
 const {database}=require(path.join(__dirname,'databaseConnection','db'));
 
 
@@ -21,6 +23,7 @@ app.use('/api/vd/users',userRouter);
 app.use('api/vd/products',buyRouter);
 
 app.use('api/vd/deposits',depositRouter);
+app.use(loginRouter);
 
 
 const PORT=process.env.PORT||4000;
