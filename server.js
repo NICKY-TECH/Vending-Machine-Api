@@ -8,6 +8,8 @@ const {depositRouter}=require(path.join(__dirname,'routes','deposit.routes'));
 
 const {buyerRouter}=require(path.join(__dirname,'routes','buyer.routes'));
 
+const {productRouter}=require(path.join(__dirname,'routes','product.routes'));
+
 const {loginRouter}=require(path.join(__dirname,'routes','login.routes'));
 
 const {database}=require(path.join(__dirname,'databaseConnection','db'));
@@ -20,7 +22,9 @@ const app=express();
 app.use(express.json());
 app.use('/api/vd',buyerRouter);
 app.use('/api/vd/users',userRouter);
-app.use('api/vd/products',buyRouter);
+// app.use('api/vd/products',buyRouter);
+
+app.use('/api/vd/products',productRouter);
 
 app.use('api/vd/deposits',depositRouter);
 app.use(loginRouter);

@@ -124,14 +124,24 @@ function getSpecificSeller(req,res){
 }
 function deleteASeller(req,res){
     const specificSeller=req.params.uuid;
-    user.deleteOne({role:'seller',uuid:specificSeller}).then((output)=>{
-        res.status(200).json({
-            success:true,
-            error:[],
-            message:"seller successfully deleted",
-            data:output
-        })
+    user.findOneAndDelete({role:'seller',uuid:specificSeller},function(error,deletedUser){
+        if(error){
+            res.status(500).json({
+                success:false,
+                error:[],
+                message:"An error occurred while processing your request"
+            })
+        }else{
+            res.status(200).json({
+                success:true,
+                error:[],
+                message:"seller successfully deleted",
+                data:deletedUser
+            })
+    
+        }
     })
+       
 
 }
 

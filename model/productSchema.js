@@ -4,10 +4,8 @@ const mongoose=require('mongoose');
         uuid:String,
         title:String,
         cost:String,
-        sellerId:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'User'
-        },
+        quantity:Number,
+        sellerId:String,
         deleted_at:String
     
     },
