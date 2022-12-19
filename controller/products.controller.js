@@ -154,7 +154,8 @@ async function deleteAnItem(req,res){
                 data:{}
             })
         }else{
-           product.findOneAndDelete({sellerId:decodedToken.user_id,uuid:itemUuid}, async function(error,deletedItem){
+            const currentDate=new Date();
+           product.findOneAndUpdate({sellerId:decodedToken.user_id,uuid:itemUuid},{deleted_at:currentDate},{new:true},async function(error,deletedItem){
             if(error){
 
                 res.status(500).json({
@@ -166,7 +167,6 @@ async function deleteAnItem(req,res){
             }else{
 
                 if(deletedItem){
-                                    
                                         res.status(200).json({
                                             success:true,
                                             error:[],
