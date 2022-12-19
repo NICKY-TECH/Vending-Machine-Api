@@ -9,9 +9,13 @@ const {  makeAdeposit}=require(path.join(__dirname,'..','controller','deposits.c
 
 const depositRouter=express.Router();
 
-depositRouter.post('/create',[body('amount').trim().notEmpty()] ,makeAdeposit);
+depositRouter.post('/create',[body('amount').trim().notEmpty().withMessage('The amount field cannpot be empty'),
+body('username').trim().notEmpty().withMessage('username field cannot be empty')
+] ,makeAdeposit);
 
-depositRouter.patch('/reset');
+depositRouter.patch('/reset',[body('amount').trim().notEmpty().withMessage('The amount field cannot be empty'),
+body('username').trim().notEmpty().withMessage('username field cannot be empty')
+]);
 
 module.exports={
     depositRouter,

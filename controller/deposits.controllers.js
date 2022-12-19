@@ -41,6 +41,7 @@ async function makeAdeposit(req,res){
 
 async function updateDeposit(req,res){
     const depositorUsername=req.body.username;
+    const amountPaid=req.body.amount;
     user.find({username:depositorUsername,role:'buyer'},function(error,foundUser){
       const error=validationResult(req);
       if(!error.isEmpty()){
@@ -53,8 +54,24 @@ async function updateDeposit(req,res){
             })
         }else if(foundUser){
             deposit.findOneAndUpdate({buyerId:foundUser._id},{amount:amountPaid},{new:true},function(error,updatedDeposit){
-                
-            })
+                if(error){
+                    res.status(500).json({
+                        success:false,
+                        error:[],
+                        message:"An error occurred while processing your request",
+                        data:{}
+                    })
+
+                }else{
+                    res.status(200).json({
+                        success:true,
+                        error:[],
+                        message:`Deposit updated sucessfully by ${foundUser.username}`,
+                        data:updatedDeposit
+                    })
+                }
+               
+        })
             
 
             
