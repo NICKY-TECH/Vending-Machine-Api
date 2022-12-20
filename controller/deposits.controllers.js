@@ -5,6 +5,8 @@ const {user}=require(path.join(__dirname,'..','model','userSchema'));
 const uuid=require('uuid');
 const {validationResult}=require('express-validator');
 
+// This function handles the deposit process
+
 async function makeAdeposit(req,res){
     const error=validationResult(req);
 
@@ -76,11 +78,14 @@ async function makeAdeposit(req,res){
 
 }
 
+// This function handles the deposit reset process
+
 async function updateDeposit(req,res){
     const depositorUsername=req.body.username;
     const amountPaid=req.body.amount;
     user.findOne({username:depositorUsername,role:'buyer'},function(error,foundUser){
       const errors=validationResult(req);
+      //If this route fails the predefined validation run this
       if(!errors.isEmpty()){
         res.status(422).json({
             success:false,
@@ -90,6 +95,7 @@ async function updateDeposit(req,res){
         })
     
               }else{
+                //If an issue occurs while requesting for a user with the provided username
                 if(error){
                     res.status(500).json({
                         success:false,
@@ -97,7 +103,8 @@ async function updateDeposit(req,res){
                         message:"An error occurred while processing your request",
                         data:{}
                     })
-                }else if(foundUser){
+                }//if a match was found run this
+                else if(foundUser){
                     deposit.findOneAndUpdate({buyerId:foundUser._id},{$set:{amount:amountPaid}},{new:true},function(error,updatedDeposit){
                         if(error){
                             res.status(500).json({

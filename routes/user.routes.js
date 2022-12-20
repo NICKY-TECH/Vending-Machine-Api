@@ -21,7 +21,7 @@ body('password').trim().notEmpty().withMessage('the password field cannot be emp
 
 userRouter.delete('/:uuid',deleteASeller);
 
-// userRouter.put('/uuid', deleteASeller);
+
 
 
 

@@ -92,6 +92,8 @@ async function buyAProduct(req,res){
 
 }
 
+//This controller processess buying process for a buyer
+
 async function giveChange(dep,amount,depositId,products){
     if(dep==amount){
         await deposit.deleteOne({buyerId:depositId})

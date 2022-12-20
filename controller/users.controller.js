@@ -76,7 +76,7 @@ async function getAllUsers(req,res){
                             error:[],
                             message:"List of Sellers Fetched Successfully",
                             data:{
-                                pageNumber,
+                                page:pageNumber,
                                 sellers
                             }
                         })

@@ -23,7 +23,7 @@ async function getAllBuyers(req,res){
                             error:[],
                             message: 'All buyers fetched successfully!',
                             data:{
-                            pageNumber,
+                            page:pageNumber,
                             buyers
                             }
 

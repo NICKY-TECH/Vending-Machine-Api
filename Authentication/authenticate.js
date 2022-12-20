@@ -15,7 +15,7 @@ async function authenticateUser(req,res,next){
      req.authenticate_token=verifyToken;
         next()
     }else{
-        console.log('invalid data');
+        console.log('Invalid data');
     }
   
 

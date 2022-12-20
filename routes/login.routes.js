@@ -2,7 +2,6 @@ const path=require('path');
 
 const {login}=require(path.join(__dirname,'..','controller','login.controller'));
 
-// const {authenticateUser}=require(path.join(__dirname,'..','Authenticate','authenticate'));
 
 
 
