@@ -6,8 +6,7 @@ const depositSchema=new mongoose.Schema({
       required:true
     },
     buyerId:{
-        type:mongoose.Schema.Types.ObjectId,
-       ref:'User'
+     type:String
     },
     amount:{
         type:String,

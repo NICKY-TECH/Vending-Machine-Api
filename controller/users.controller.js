@@ -7,7 +7,12 @@ const bcrypt=require('bcrypt');
 async function createUser(req,res){
     const errors=validationResult(req);
     if(!errors.isEmpty()){
-        res.status(400).json(errors.array())
+        res.status(422).json({
+            success:false,
+            error:errors.array(),
+            message:"Invalid input",
+            data:{}
+        })
     }else{
    user.findOne({username:req.body.username}, async function(error,foundUser){
     if(error){
@@ -53,7 +58,6 @@ async function createUser(req,res){
 
 async function getAllUsers(req,res){
     const {page}=req.query;
-        if(req.query.role=='seller'){
             const pageNumber=page||1;
             const skip=(pageNumber-1)*2;
             user.find({role:'seller'},{password:0},{limit:2,skip:skip},function(error,sellers){
@@ -70,8 +74,11 @@ async function getAllUsers(req,res){
                         res.status(200).json({
                             success:true,
                             error:[],
-                            message:"Single Seller Fetched Successfully",
-                            data:sellers
+                            message:"List of Sellers Fetched Successfully",
+                            data:{
+                                pageNumber,
+                                sellers
+                            }
                         })
                     }else{
                         // if users with the role users doesn't exist
@@ -85,7 +92,7 @@ async function getAllUsers(req,res){
                     }
                 }
             })
-        }
+        
     
     }
 
@@ -124,7 +131,7 @@ function getSpecificSeller(req,res){
 }
 function deleteASeller(req,res){
     const specificSeller=req.params.uuid;
-    user.findOneAndDelete({role:'seller',uuid:specificSeller},function(error,deletedUser){
+    user.findOneAndDelete({role:'seller',uuid:specificSeller},{password:0},function(error,deletedUser){
         if(error){
             res.status(500).json({
                 success:false,

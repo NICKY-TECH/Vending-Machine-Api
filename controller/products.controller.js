@@ -19,7 +19,7 @@ async function addProduct(req,res){
     
     jwt.verify(req.authenticate_token,process.env.TOKEN_SECRET,async(error,decoded)=>{
         if(error){
-            res.status(400).json({
+            res.status(401).json({
                 success:false,
                 error:[error],
                 message:"you are not authorized to access this route",
@@ -36,7 +36,7 @@ async function addProduct(req,res){
                     })
                 }else if(User){
                     if(!errors.isEmpty()){
-                        res.status(400).json({
+                        res.status(422).json({
                             success:false,
                             error:errors.array(),
                             message:'Invalid input',
@@ -45,7 +45,7 @@ async function addProduct(req,res){
                     }
                    
                 else{
-                    product.findOne({title:req.body.title},{},{sort:{quantity:-1}}, async function(error,productFound){
+                    product.findOne({title:req.body.title,deleted_at:null},{},{sort:{quantity:-1}}, async function(error,productFound){
                         if(error){
                             res.status(500).json({
                                 success:false,
@@ -63,7 +63,7 @@ async function addProduct(req,res){
                  
                  
                          })
-                         res.status(200).json({
+                         res.status(201).json({
                             success:true,
                             error:[],
                             message:"A new product has been created successfully",
@@ -80,7 +80,7 @@ async function addProduct(req,res){
                  
                  
                          })
-                         res.status(200).json({
+                         res.status(201).json({
                             success:true,
                             error:[],
                             message:"A new product has been created successfully",
@@ -121,7 +121,7 @@ async function getAllProducts(req,res){
     const page=req.query.page?req.query.page:1;
     const skip=(page-1)*4;
 
-    product.find({},{},{limit:4,skip:skip},function(error,allProducts){
+    product.find({deleted_at:null},{},{limit:4,skip:skip},function(error,allProducts){
         if(error){
             res.status(500).json({
                 success:false,
@@ -129,14 +129,26 @@ async function getAllProducts(req,res){
                 message:"An error occurred while processing your request, please try again",
                 data:{}
             })
-        }else{
+        }else if(allProducts){
             res.status(200).json({
                 success:true,
                 error:[],
                 message:"All products have been successfully requested for",
-                data:allProducts
+                data:{
+                    page,
+                    allProducts
+                }
 
             })
+        }else{
+            res.status(404).json({
+                success:false,
+                error:[],
+                message:"Invalid uuid, no product exists with such a uuid",
+                data:{}
+
+            })
+
         }
 
     })
@@ -147,7 +159,7 @@ async function deleteAnItem(req,res){
     const itemUuid=req.params.uuid;
     jwt.verify(req.authenticate_token,process.env.TOKEN_SECRET,async(error,decodedToken)=>{
         if(error){
-            res.status(400).json({
+            res.status(401).json({
                 success:false,
                 error:[error],
                 message:"You are unauthorized to carry out this operation",
@@ -155,7 +167,7 @@ async function deleteAnItem(req,res){
             })
         }else{
             const currentDate=new Date();
-           product.findOneAndUpdate({sellerId:decodedToken.user_id,uuid:itemUuid},{deleted_at:currentDate},{new:true},async function(error,deletedItem){
+           product.findOneAndUpdate({sellerId:decodedToken.user_id,uuid:itemUuid,deleted_at:null},{deleted_at:currentDate},{new:true},async function(error,deletedItem){
             if(error){
 
                 res.status(500).json({
@@ -167,6 +179,7 @@ async function deleteAnItem(req,res){
             }else{
 
                 if(deletedItem){
+                    
                                         res.status(200).json({
                                             success:true,
                                             error:[],
@@ -191,7 +204,7 @@ async function deleteAnItem(req,res){
 }
 async function getSpecificProduct(req,res){
     const {title}=req.query;
-    product.find({title},function(error,product){
+    product.find({title,deleted_at:null},function(error,product){
         if(error){
             res.status(500).json({
                 success:false,
@@ -199,12 +212,20 @@ async function getSpecificProduct(req,res){
                 message:"An error occurred while processing your request, please try again",
                 data:{}
             })
-        }else{
+        }else if(product){
             res.status(200).json({
                 success:true,
                 error:[],
                 message:"Product found successfully",
                 data:product,
+            })
+        }else{
+            res.status(404).json({
+                success:false,
+                error:[],
+                message:"Invalid uuid, no product exists with such a uuid",
+                data:{}
+
             })
         }
         

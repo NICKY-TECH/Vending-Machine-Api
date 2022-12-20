@@ -8,6 +8,8 @@ const {body}=require('express-validator');
 
 const userRouter=express.Router();
 
+userRouter.get('/:uuid',getSpecificSeller);
+
 userRouter.get('/',getAllUsers);
 
 userRouter.post('/create',[
@@ -16,8 +18,6 @@ body('password').trim().notEmpty().withMessage('the password field cannot be emp
 .isLength({min:8,max:16}).withMessage('password must be a minimum of 8 characters and a maximum of 16 characters')
 ]
 ,createUser);
-
-userRouter.get('/:uuid',getSpecificSeller);
 
 userRouter.delete('/:uuid',deleteASeller);
 

@@ -5,7 +5,6 @@ const {user}=require(path.join(__dirname,'..','model','userSchema'));
 
 async function getAllBuyers(req,res){
     const {page}=req.query;
-        if(req.query.role=='buyer'){
             const pageNumber=page||1;
             const skip=(pageNumber-1)*2;
             user.find({role:'buyer'},{password:0},{limit:2,skip:skip},function(error,buyers){
@@ -23,7 +22,10 @@ async function getAllBuyers(req,res){
                             success: true,
                             error:[],
                             message: 'All buyers fetched successfully!',
-                            data:buyers
+                            data:{
+                            pageNumber,
+                            buyers
+                            }
 
                         })
                     }else{
@@ -38,7 +40,7 @@ async function getAllBuyers(req,res){
                     }
                 }
             })
-        }
+        
     
     }
 
@@ -57,10 +59,18 @@ function getSpecificBuyer(req,res){
                 success:true,
                 error:[],
                 message:'Single Buyer Fetched Successfully!',
-                data:seller
+                data:
+                    {
+                        _id:buyer._id,
+                        uuid: buyer.uuid,
+                        username: buyer.username,
+                        role: buyer.role,
+                        createdAt: buyer.createdAt,
+                        updatedAt: buyer.updatedAt
+                }
             })
             
-        }else if(!seller){
+        }else if(!buyer){
             res.status(404).json({
                 success:false,
                 error:[
@@ -78,14 +88,21 @@ function getSpecificBuyer(req,res){
 
 
 }
-function deleteABuyer(req,res){
-    const specificBuyer=req.params.uuid;
-  user.findOneAndDelete({role:'buyer',uuid:specificBuyer}).then((output)=>{
+async function deleteABuyer(req,res){
+ const specificBuyer=req.params.uuid;
+  user.findOneAndDelete({role:'buyer',uuid:specificBuyer},{password:0}).then((output)=>{
         res.status(200).json({
             success:true,
             error:[],
             message:"buyer successfully deleted",
-            data:output
+            data:{
+                    _id:output._id,
+                    uuid: output.uuid,
+                    username: output.usernam,
+                    role: output.role,
+                    createdAt: buyer.createdAt,
+                    updatedAt: buyer.updatedAt
+            }
         })
     })
 
